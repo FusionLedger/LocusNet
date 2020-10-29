@@ -20,7 +20,7 @@ const ALICE: &'static str = "d43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5
 type SequenceType = u64;
 
 #[derive(Serialize, Deserialize)]
-pub struct Balances {
+pub struct Votes {
     total_issuance: chain::Balance,
     accounts: BTreeMap<AccountIdWrapper, chain::Balance>,
     sequence: SequenceType,
@@ -88,11 +88,11 @@ pub enum Response {
 
 const SUPPLY: u128 = 0;
 
-impl Balances {
+impl Votes {
     pub fn new(id: Option<ecdsa::Pair>) -> Self {
         let mut accounts = BTreeMap::<AccountIdWrapper, chain::Balance>::new();
         accounts.insert(AccountIdWrapper::from_hex(ALICE), SUPPLY);
-        Balances {
+        Votes {
             total_issuance: 0,
             accounts,
             sequence: 0,
@@ -102,7 +102,7 @@ impl Balances {
     }
 }
 
-impl contracts::Contract<Command, Request, Response> for Balances {
+impl contracts::Contract<Command, Request, Response> for Votes {
     fn id(&self) -> contracts::ContractId { contracts::BALANCES }
 
     fn handle_command(&mut self, origin: &chain::AccountId, _txref: &TxRef, cmd: Command) -> TransactionStatus {
@@ -233,9 +233,9 @@ impl contracts::Contract<Command, Request, Response> for Balances {
     }
 }
 
-impl core::fmt::Debug for Balances {
+impl core::fmt::Debug for Votes {
     fn fmt(&self, f: &mut core::fmt::Formatter) -> core::fmt::Result {
-        write!(f, r#"Balances {{
+        write!(f, r#"Votes {{
     total_issuance: {:?},
     accounts: {:?},
     sequence: {:?},
